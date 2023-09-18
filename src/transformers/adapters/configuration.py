@@ -210,6 +210,11 @@ class AdapterConfig(AdapterConfigBase):
         phm_bias (:obj:`bool`, optional):
             If True the down and up projection PHMLayer has a bias term. If `phm_layer` is False this is ignored.
             Defaults to True
+        monolingual_adapters (:obj:`bool`, optional):
+            If True, add adapter modules to only the encoder layers, or only the decoder layers. Defaults to False.
+        monolingual_encoder (:obj:`bool`, optional):
+            If True, add adapter modules to the encoder layers only. If false, add adapter modules to decoder layers 
+            only. Defaults to True.
     """
 
     # Required options
