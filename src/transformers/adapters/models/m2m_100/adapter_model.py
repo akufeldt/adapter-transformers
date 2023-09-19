@@ -23,7 +23,7 @@ from ...model_mixin import EmbeddingAdaptersWrapperMixin
 
 
 @add_start_docstrings(
-    "M2M100 Model with the option to add multiple flexible prediction heads on top.", M2M100_START_DOCSTRING
+    "M2M100 Model with the option to add multiple flexible prediction heads on top.", M2M_100_START_DOCSTRING
 )
 class M2M100AdapterModel(EmbeddingAdaptersWrapperMixin, ModelWithFlexibleHeadsAdaptersMixin, M2M100PreTrainedModel):
     _keys_to_ignore_on_load_missing = ["encoder.embed_tokens.weight", "decoder.embed_tokens.weight"]
@@ -40,7 +40,7 @@ class M2M100AdapterModel(EmbeddingAdaptersWrapperMixin, ModelWithFlexibleHeadsAd
     def get_decoder(self):
         return self.model.get_decoder()
 
-    @add_start_docstrings_to_model_forward(M2M100_INPUTS_DOCSTRING)
+    @add_start_docstrings_to_model_forward(M2M_100_INPUTS_DOCSTRING)
     def forward(
         self,
         input_ids=None,
