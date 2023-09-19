@@ -1220,6 +1220,7 @@ class M2M100Model(M2M100ModelAdaptersMixin, M2M100PreTrainedModel):
         output_type=Seq2SeqModelOutput,
         config_class=_CONFIG_FOR_DOC,
     )
+    @ForwardContext.wrap
     def forward(
         self,
         input_ids: Optional[torch.LongTensor] = None,
