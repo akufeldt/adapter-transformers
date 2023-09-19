@@ -1195,6 +1195,8 @@ class M2M100Model(M2M100ModelAdaptersMixin, M2M100PreTrainedModel):
         self.encoder = M2M100Encoder(config, self.shared)
         self.decoder = M2M100Decoder(config, self.shared)
 
+        self._init_adapter_modules()
+
         # Initialize weights and apply final processing
         self.post_init()
 
