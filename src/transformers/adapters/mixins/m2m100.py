@@ -16,6 +16,9 @@ class M2M100EncoderLayerAdaptersMixin:
     """Adds adapters to the M2M100EncoderLayer module of M2M100."""
 
     def _init_adapter_modules(self):
+        f = open("out_config.txt", "a")
+        f.write("config: "+' '.join(self.config.__dir__()))
+        f.close()
         if not (self.config.monolingual_adapters and not self.config.monolingual_encoder):
             self.attention_adapters = AdapterLayer("mh_adapter", self.config)
             self.output_adapters = AdapterLayer("output_adapter", self.config)
