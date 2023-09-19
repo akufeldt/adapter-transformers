@@ -76,16 +76,8 @@ def wrap_config(config: PretrainedConfig) -> PretrainedConfig:
     Returns:
         PretrainedConfig: The same config object, with modifications applied.
     """
-    sys.stdout.write("currently in wrap_config")
-    
-    f = open("out.txt", "a")
-    f.write("currently in wrap_config")
-    f.close()
-
     if getattr(config, "is_adaptable", False):
         return config
-    
-    sys.stdout.write("config does not currently have is_adaptable attr, continuing")
 
     # Init ModelAdaptersConfig
     if not hasattr(config, "adapters"):

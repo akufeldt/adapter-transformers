@@ -394,8 +394,7 @@ class M2M100EncoderLayer(M2M100EncoderLayerAdaptersMixin, nn.Module):
         self.final_layer_norm = nn.LayerNorm(self.embed_dim)
 
         self._init_adapter_modules()
-        
-    @ForwardContext.wrap
+
     def forward(
         self,
         hidden_states: torch.Tensor,
