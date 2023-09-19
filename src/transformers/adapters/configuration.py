@@ -251,6 +251,8 @@ class AdapterConfig(AdapterConfigBase):
     hypercomplex_nonlinearity: Optional[str] = "glorot-uniform"
     phm_rank: Optional[int] = 1
     phm_bias: Optional[bool] = True
+    monolingual_adapters: Optional[bool] = False
+    monolingual_encoder: Optional[bool] = True
 
     # We want to emulate a simple form of immutability while keeping the ability to add custom attributes.
     # Therefore, we don't allow changing attribute values if set once.

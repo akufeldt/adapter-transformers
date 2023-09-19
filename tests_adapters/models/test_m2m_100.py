@@ -1,4 +1,4 @@
-from tests.models.mbart.test_modeling_m2m_100 import *
+from tests.models.m2m_100.test_modeling_m2m_100 import *
 from transformers import M2M100AdapterModel
 from transformers.testing_utils import require_torch
 
