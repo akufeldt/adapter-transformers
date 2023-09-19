@@ -394,7 +394,8 @@ class M2M100EncoderLayer(M2M100EncoderLayerAdaptersMixin, nn.Module):
         self.final_layer_norm = nn.LayerNorm(self.embed_dim)
 
         self._init_adapter_modules()
-
+        
+    @ForwardContext.wrap
     def forward(
         self,
         hidden_states: torch.Tensor,
@@ -1343,7 +1344,6 @@ class M2M100ForConditionalGeneration(M2M100ModelWithHeadsAdaptersMixin, M2M100Pr
     @add_start_docstrings_to_model_forward(M2M_100_INPUTS_DOCSTRING)
     @replace_return_docstrings(output_type=Seq2SeqLMOutput, config_class=_CONFIG_FOR_DOC)
     @add_end_docstrings(M2M_100_GENERATION_EXAMPLE)
-    @ForwardContext.wrap
     def forward(
         self,
         input_ids: Optional[torch.LongTensor] = None,
