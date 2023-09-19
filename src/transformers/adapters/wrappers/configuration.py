@@ -113,6 +113,12 @@ def wrap_config(config: PretrainedConfig) -> PretrainedConfig:
         wrap_config(config.text_config)
         config.vision_config.adapters = config.adapters
         config.text_config.adapters = config.adapters
+    elif isinstance(config, EncoderDecoderConfig):
+        # make sure adapter config is shared
+        wrap_config(config.encoder)
+        wrap_config(config.decoder)
+        config.decoder.adapters = config.encoder.adapters
+        config.adapters = config.encoder.adapters
     config.is_adaptable = True
 
     return config
