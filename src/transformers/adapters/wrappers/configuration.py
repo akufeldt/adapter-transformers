@@ -1,4 +1,5 @@
 import copy
+import sys
 
 from ...configuration_utils import PretrainedConfig
 from ...models.clip.configuration_clip import CLIPConfig
@@ -75,11 +76,11 @@ def wrap_config(config: PretrainedConfig) -> PretrainedConfig:
     Returns:
         PretrainedConfig: The same config object, with modifications applied.
     """
-    print("currently in wrap_config")
+    sys.stdout.write("Hello")("currently in wrap_config")
     if getattr(config, "is_adaptable", False):
         return config
     
-    print("config does not currently have is_adaptable attr, continuing")
+    sys.stdout.write("Hello")("config does not currently have is_adaptable attr, continuing")
 
     # Init ModelAdaptersConfig
     if not hasattr(config, "adapters"):
