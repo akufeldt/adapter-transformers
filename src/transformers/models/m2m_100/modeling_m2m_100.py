@@ -755,7 +755,8 @@ class M2M100Encoder(InvertibleAdaptersMixin, M2M100PreTrainedModel):
         self.gradient_checkpointing = False
         # Initialize weights and apply final processing
         self.post_init()
-
+        
+    @ForwardContext.wrap
     def forward(
         self,
         input_ids: Optional[torch.Tensor] = None,

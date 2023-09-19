@@ -232,9 +232,9 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
 
                 #NOTE remove me
                 f = open("out_context.txt", "a")
-                f.write("context: "+context.__dir__())
+                f.write("context: "+' '.join(context.__dir__()))
                 f.close()
-                
+
                 layer_output = adapter_layer(
                     hidden_states, residual_input=residual, output_gating=context.output_adapter_gating_scores
                 )
