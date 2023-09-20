@@ -430,7 +430,11 @@ class M2M100EncoderLayer(M2M100EncoderLayerAdaptersMixin, nn.Module):
         hidden_states = nn.functional.dropout(hidden_states, p=self.activation_dropout, training=self.training)
         hidden_states = self.fc2(hidden_states)
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
-        hidden_states = self.output_adapters(hidden_states, residual, None)
+        # apply output adapters of choice (monolingual or traditional)
+        if self.monolingual_enc_adapters.get_active_setup(self.monolingual_enc_adapters.adapters) is not None:
+            hidden_states = self.monolingual_enc_adapters(hidden_states, residual, None)
+        else:
+            hidden_states = self.output_adapters(hidden_states, residual, None)
 
         if hidden_states.dtype == torch.float16 and (
             torch.isinf(hidden_states).any() or torch.isnan(hidden_states).any()
@@ -559,7 +563,12 @@ class M2M100DecoderLayer(M2M100DecoderLayerAdaptersMixin, nn.Module):
         hidden_states = nn.functional.dropout(hidden_states, p=self.activation_dropout, training=self.training)
         hidden_states = self.fc2(hidden_states)
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
-        hidden_states = self.output_adapters(hidden_states, residual, None)
+        # apply output adapters of choice (monolingual or traditional)
+        if self.monolingual_dec_adapters.get_active_setup(self.monolingual_dec_adapters.adapters) is not None:
+            hidden_states = self.monolingual_dec_adapters(hidden_states, residual, None)
+        else:
+            hidden_states = self.output_adapters(hidden_states, residual, None)
+        
 
         outputs = (hidden_states,)
 

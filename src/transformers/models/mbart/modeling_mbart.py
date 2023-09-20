@@ -350,14 +350,6 @@ class MBartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
                 Whether or not to return the attentions tensors of all attention layers. See `attentions` under
                 returned tensors for more detail.
         """
-        f = open("out_bart_mh_active.txt", "a")
-        f.write("config: "+str(self.attention_adapters.get_active_setup(self.attention_adapters.adapters))+"\n\n")
-        f.close()
-
-        f = open("out_bart_output_active.txt", "a")
-        f.write("config: "+str(self.output_adapters.get_active_setup(self.output_adapters.adapters))+"\n\n")
-        f.close()
-
         residual = hidden_states
         hidden_states = self.self_attn_layer_norm(hidden_states)
         hidden_states, attn_weights, _ = self.self_attn(

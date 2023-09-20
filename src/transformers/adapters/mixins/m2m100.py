@@ -16,15 +16,13 @@ class M2M100EncoderLayerAdaptersMixin:
     """Adds adapters to the M2M100EncoderLayer module of M2M100."""
 
     def _init_adapter_modules(self):
-        f = open("out_config.txt", "a")
-        f.write("config: "+str(self.config.adapters.config_map)+"\n")
-        f.close()
-        #if self.config.adapters.config_map is not {}:
-        if not (self.config.adapters.monolingual_adapters and not self.config.adapters.monolingual_encoder):
-            self.attention_adapters = AdapterLayer("mh_adapter", self.config)
-            self.output_adapters = AdapterLayer("output_adapter", self.config)
-            self.attention_adapters._init_adapter_modules()
-            self.output_adapters._init_adapter_modules()
+        if not self.config.is_decoder:
+            self.monolingual_enc_adapters = AdapterLayer("monolingual_enc_adapter", self.config)
+            self.monolingual_enc_adapters._init_adapter_modules()
+        self.attention_adapters = AdapterLayer("mh_adapter", self.config)
+        self.output_adapters = AdapterLayer("output_adapter", self.config)
+        self.attention_adapters._init_adapter_modules()
+        self.output_adapters._init_adapter_modules()
 
 
 class M2M100DecoderLayerAdaptersMixin(M2M100EncoderLayerAdaptersMixin):
@@ -32,13 +30,10 @@ class M2M100DecoderLayerAdaptersMixin(M2M100EncoderLayerAdaptersMixin):
 
     def _init_adapter_modules(self):
         super()._init_adapter_modules()
-        if not (self.config.adapters.monolingual_adapters and self.config.adapters.monolingual_encoder):
-            if self.config.adapters.monolingual_adapters and not self.config.adapters.monolingual_encoder:
-                self.output_adapters = AdapterLayer("output_adapter", self.config)
-                self.output_adapters._init_adapter_modules()
-
-            self.cross_attention_adapters = AdapterLayer("cross_adapter", self.config)
-            self.cross_attention_adapters._init_adapter_modules()
+        self.cross_attention_adapters = AdapterLayer("cross_adapter", self.config)
+        self.monolingual_dec_adapters = AdapterLayer("monolingual_dec_adapter", self.config)
+        self.monolingual_dec_adapters._init_adapter_modules()
+        self.cross_attention_adapters._init_adapter_modules()
 
 
 class M2M100ModelAdaptersMixin(EmbeddingAdaptersMixin, InvertibleAdaptersWrapperMixin, ModelAdaptersMixin):
