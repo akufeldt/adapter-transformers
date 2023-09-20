@@ -17,9 +17,9 @@ class M2M100EncoderLayerAdaptersMixin:
 
     def _init_adapter_modules(self):
         f = open("out_config.txt", "a")
-        f.write("config: "+' '.join(self.config.adapters.to_dict().items())+"\n")
+        f.write("config: "+str(self.config.adapters.to_dict())+"\n")
         f.write("config: "+' '.join(self.config.adapters.adapters.__dir__())+"\n")
-        f.write("config: "+' '.join(self.config.adapters.adapters.__dir__())+"\n")
+        f.write("config: "+str(self.config.adapters.config_map)+"\n")
         f.close()
         if not (self.config.adapters.monolingual_adapters and not self.config.adapters.monolingual_encoder):
             self.attention_adapters = AdapterLayer("mh_adapter", self.config)
