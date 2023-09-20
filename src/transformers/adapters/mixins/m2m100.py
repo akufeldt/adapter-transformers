@@ -17,9 +17,11 @@ class M2M100EncoderLayerAdaptersMixin:
 
     def _init_adapter_modules(self):
         f = open("out_config.txt", "a")
-        f.write("config: "+' '.join(self.config.adapters.__dir__()))
+        f.write("config: "+' '.join(self.config.adapters.to_dict.items())+"\n")
+        f.write("config: "+' '.join(self.config.adapters.adapters.__dir__())+"\n")
+        f.write("config: "+' '.join(self.config.adapters.adapters.__dir__())+"\n")
         f.close()
-        if not (self.config.monolingual_adapters and not self.config.monolingual_encoder):
+        if not (self.config.adapters.monolingual_adapters and not self.config.adapters.monolingual_encoder):
             self.attention_adapters = AdapterLayer("mh_adapter", self.config)
             self.output_adapters = AdapterLayer("output_adapter", self.config)
             self.attention_adapters._init_adapter_modules()
@@ -31,8 +33,8 @@ class M2M100DecoderLayerAdaptersMixin(M2M100EncoderLayerAdaptersMixin):
 
     def _init_adapter_modules(self):
         super()._init_adapter_modules()
-        if not (self.config.monolingual_adapters and self.config.monolingual_encoder):
-            if self.config.monolingual_adapters and not self.config.monolingual_encoder:
+        if not (self.config.adapters.monolingual_adapters and self.config.adapters.monolingual_encoder):
+            if self.config.adapters.monolingual_adapters and not self.config.adapters.monolingual_encoder:
                 self.output_adapters = AdapterLayer("output_adapter", self.config)
                 self.output_adapters._init_adapter_modules()
 
