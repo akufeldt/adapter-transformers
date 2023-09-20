@@ -17,7 +17,7 @@ class M2M100EncoderLayerAdaptersMixin:
 
     def _init_adapter_modules(self):
         f = open("out_config.txt", "a")
-        f.write("config: "+' '.join(self.config.adapters.to_dict.items())+"\n")
+        f.write("config: "+' '.join(self.config.adapters.to_dict().items())+"\n")
         f.write("config: "+' '.join(self.config.adapters.adapters.__dir__())+"\n")
         f.write("config: "+' '.join(self.config.adapters.adapters.__dir__())+"\n")
         f.close()
