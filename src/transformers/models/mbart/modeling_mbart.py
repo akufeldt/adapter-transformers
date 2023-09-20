@@ -350,6 +350,14 @@ class MBartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
                 Whether or not to return the attentions tensors of all attention layers. See `attentions` under
                 returned tensors for more detail.
         """
+        f = open("out_bart_mh_active.txt", "a")
+        f.write("config: "+str(self.attention_adapters.get_active_setup(self.attention_adapters.adapters))+"\n\n")
+        f.close()
+
+        f = open("out_bart_output_active.txt", "a")
+        f.write("config: "+str(self.output_adapters.get_active_setup(self.output_adapters.adapters))+"\n\n")
+        f.close()
+
         residual = hidden_states
         hidden_states = self.self_attn_layer_norm(hidden_states)
         hidden_states, attn_weights, _ = self.self_attn(
@@ -360,7 +368,7 @@ class MBartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
         )
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
         hidden_states = self.attention_adapters(hidden_states, residual, None)
-
+        
         residual = hidden_states
         hidden_states = self.final_layer_norm(hidden_states)
         hidden_states = self.activation_fn(self.fc1(hidden_states))
@@ -368,7 +376,7 @@ class MBartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
         hidden_states = self.fc2(hidden_states)
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
         hidden_states = self.output_adapters(hidden_states, residual, None)
-
+        
         if hidden_states.dtype == torch.float16 and (
             torch.isinf(hidden_states).any() or torch.isnan(hidden_states).any()
         ):
