@@ -16,6 +16,9 @@ class BartEncoderLayerAdaptersMixin:
     """Adds adapters to the BartEncoderLayer module of BART."""
 
     def _init_adapter_modules(self):
+        f = open("out_bart_config.txt", "a")
+        f.write("config: "+str(self.config.adapters.config_map)+"\n")
+        f.close()
         self.attention_adapters = AdapterLayer("mh_adapter", self.config)
         self.output_adapters = AdapterLayer("output_adapter", self.config)
         self.attention_adapters._init_adapter_modules()
