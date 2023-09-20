@@ -211,9 +211,9 @@ class AdapterConfig(AdapterConfigBase):
             If True the down and up projection PHMLayer has a bias term. If `phm_layer` is False this is ignored.
             Defaults to True
         monolingual_enc_adapter (:obj:`bool`, optional):
-            Add monolingual adapters to the encoder, using the architecture as described in Philip et al. 2020, 
-            "Monolingual Adapters for Zero-Shot Neural Machine Translation". If True, add output adapter modules 
-            to only the encoder layers. Defaults to False.
+            Add monolingual adapters to the encoder, as proposed in Philip et al. 2020, "Monolingual Adapters for 
+            Zero-Shot Neural Machine Translation". If True, add output adapter modules to only the encoder layers. 
+            Defaults to False.
         monolingual_dec_adapter (:obj:`bool`, optional):
             Add monolingual adapters to the decoder. If True, add output adapter modules to only the decoder layers. 
             Defaults to False.
