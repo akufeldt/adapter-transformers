@@ -23,7 +23,7 @@ class BartEncoderLayerAdaptersMixin:
 
         f = open("out_bart_mh_config.txt", "a")
         f.write("config: "+str(self.attention_adapters)+"\n\n")
-        f.write("config.dir: "+str(self.attention_adapters.__dir__())+"\n\n")
+        f.write("config.dir: "+str(self.output_adapters)+"\n\n")
         f.close()
 
 
