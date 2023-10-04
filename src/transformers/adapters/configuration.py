@@ -506,16 +506,6 @@ class ConfigUnion(AdapterConfigBase):
                 raise TypeError(f"{config} is not an instance of AdapterConfigBase")
             elif isinstance(config, ConfigUnion):
                 raise TypeError(f"{config} of type {type(config)} is not supported in a config union.")
-        # if using monolingual adapters and output adapters, warn user that output_adapters are overridden
-        monolingual_active = False
-        output_active = False
-        for i, c_a in enumerate(configs):
-            if c_a.monolingual_enc_adapter or c_a.monolingual_dec_adapter:
-                monolingual_active = True
-            if c_a.output_adapter:
-                output_active = True
-        if monolingual_active and output_active:
-            logging.warning("Note that monolingual adapters override and replace output_adapters in that encoder and/or decoder.")
         # perform pairwise check
         for c_a, c_b in [(c_a, c_b) for i, c_a in enumerate(configs) for j, c_b in enumerate(configs) if i > j]:
             if c_a.architecture != c_b.architecture:
