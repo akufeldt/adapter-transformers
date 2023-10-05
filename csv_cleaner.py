@@ -23,5 +23,5 @@ def main():
         df = clean_csv(train_path)
         df.to_csv(folder+'/cleaned_train.csv', index=False)
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
     main()
