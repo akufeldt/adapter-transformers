@@ -210,6 +210,13 @@ class AdapterConfig(AdapterConfigBase):
         phm_bias (:obj:`bool`, optional):
             If True the down and up projection PHMLayer has a bias term. If `phm_layer` is False this is ignored.
             Defaults to True
+        monolingual_enc_adapter (:obj:`bool`, optional):
+            Add monolingual adapters to the encoder, as proposed in Philip et al. 2020, "Monolingual Adapters for 
+            Zero-Shot Neural Machine Translation". If True, add output adapter modules to only the encoder layers. 
+            Defaults to False.
+        monolingual_dec_adapter (:obj:`bool`, optional):
+            Add monolingual adapters to the decoder. If True, add output adapter modules to only the decoder layers. 
+            Defaults to False.
     """
 
     # Required options
@@ -246,6 +253,8 @@ class AdapterConfig(AdapterConfigBase):
     hypercomplex_nonlinearity: Optional[str] = "glorot-uniform"
     phm_rank: Optional[int] = 1
     phm_bias: Optional[bool] = True
+    monolingual_enc_adapter: Optional[bool] = False
+    monolingual_dec_adapter: Optional[bool] = False
 
     # We want to emulate a simple form of immutability while keeping the ability to add custom attributes.
     # Therefore, we don't allow changing attribute values if set once.

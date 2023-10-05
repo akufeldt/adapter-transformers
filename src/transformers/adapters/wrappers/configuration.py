@@ -1,4 +1,5 @@
 import copy
+import sys
 
 from ...configuration_utils import PretrainedConfig
 from ...models.clip.configuration_clip import CLIPConfig
@@ -38,6 +39,12 @@ CONFIG_CLASS_KEYS_MAPPING = {
     "gptj": {
         "hidden_dropout_prob": "resid_pdrop",
         "attention_probs_dropout_prob": "attn_pdrop",
+    },
+    "m2m_100": {
+        "num_attention_heads": "encoder_attention_heads",
+        "hidden_size": "d_model",
+        "hidden_dropout_prob": "dropout",
+        "attention_probs_dropout_prob": "attention_dropout",
     },
     "mbart": {
         "num_attention_heads": "encoder_attention_heads",

@@ -360,7 +360,7 @@ class MBartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
         )
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
         hidden_states = self.attention_adapters(hidden_states, residual, None)
-
+        
         residual = hidden_states
         hidden_states = self.final_layer_norm(hidden_states)
         hidden_states = self.activation_fn(self.fc1(hidden_states))
@@ -368,7 +368,7 @@ class MBartEncoderLayer(BartEncoderLayerAdaptersMixin, nn.Module):
         hidden_states = self.fc2(hidden_states)
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
         hidden_states = self.output_adapters(hidden_states, residual, None)
-
+        
         if hidden_states.dtype == torch.float16 and (
             torch.isinf(hidden_states).any() or torch.isnan(hidden_states).any()
         ):

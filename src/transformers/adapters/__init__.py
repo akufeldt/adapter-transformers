@@ -114,6 +114,10 @@ _import_structure = {
         "GPT2ModelWithHeads",
     ],
     "models.gptj": ["GPTJAdapterModel"],
+    "models.m2m_100": [
+        "M2M100AdapterModel",
+        "M2M100ModelWithHeads",
+    ],
     "models.mbart": [
         "MBartAdapterModel",
         "MBartModelWithHeads",
@@ -218,6 +222,7 @@ if TYPE_CHECKING:
     from .models.distilbert import DistilBertAdapterModel, DistilBertModelWithHeads
     from .models.gpt2 import GPT2AdapterModel, GPT2ModelWithHeads
     from .models.gptj import GPTJAdapterModel
+    from .models.m2m_100 import M2M100AdapterModel, M2M100ModelWithHeads
     from .models.mbart import MBartAdapterModel, MBartModelWithHeads
     from .models.roberta import RobertaAdapterModel, RobertaModelWithHeads
     from .models.t5 import T5AdapterModel, T5ModelWithHeads
