@@ -552,11 +552,11 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             else:
                 raise ValueError(f"Invalid adapter setup {adapter_setup}")
             
-            import sys 
+            import warnings
             
-            sys.stderr.write(f'LOCATION: {self.location_key}')
-            sys.stderr.write(f'ADAPTERS: {self.adapters}')
-            sys.stderr.write(f'SETUP: {adapter_setup}')
+            warnings.warn(f'LOCATION: {self.location_key}')
+            warnings.warn(f'ADAPTERS: {self.adapters}')
+            warnings.warn(f'SETUP: {adapter_setup}')
 
             last_adapter = self.adapters[adapter_setup.last()]
             hidden_states = last_adapter.post_forward(hidden_states, input_hidden_states, residual_input, layer_norm)
