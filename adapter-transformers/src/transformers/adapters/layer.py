@@ -551,9 +551,12 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
                 hidden_states = self.adapter_batchsplit(adapter_setup, hidden_states, residual_input, layer_norm)
             else:
                 raise ValueError(f"Invalid adapter setup {adapter_setup}")
-            print(f'LOCATION: {self.location_key}')
-            print(f'ADAPTERS: {self.adapters}')
-            print(f'SETUP: {adapter_setup}')
+            
+            import sys 
+            
+            sys.stderr.write(f'LOCATION: {self.location_key}')
+            sys.stderr.write(f'ADAPTERS: {self.adapters}')
+            sys.stderr.write(f'SETUP: {adapter_setup}')
 
             last_adapter = self.adapters[adapter_setup.last()]
             hidden_states = last_adapter.post_forward(hidden_states, input_hidden_states, residual_input, layer_norm)
