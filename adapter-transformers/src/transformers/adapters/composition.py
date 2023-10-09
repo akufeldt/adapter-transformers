@@ -134,7 +134,7 @@ SUPPORTED_MODELS = {
         "bert-generation",
     ],
     Pair: [
-        "m2m100",
+        "m2m_100",
     ],
 }
 
