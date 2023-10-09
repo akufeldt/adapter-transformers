@@ -418,24 +418,16 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
            determined by a list of adapter names."""
         self.train()
         self.freeze_model(True)
-        # NOTE: remove me
-        import warnings
-        warnings.warn(f'frozen model 1: {self.model_frozen}\n')
         adapter_setup = parse_composition(adapter_setup)
-        warnings.warn(f'adapter_setup 1: {adapter_setup}\n')
         self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
-        warnings.warn(f'adapter_setup 2: {adapter_setup}\n')
 
-        """for adapter_name in adapter_setup:
+        for adapter_name in adapter_setup.flatten():
             if adapter_name in self.base_model.shared_parameters:
                 for param in self.base_model.shared_parameters[adapter_name].values():
-                    param.requires_grad = True"""
+                    param.requires_grad = True
 
         # use the adapters to be trained by default in every forward pass
         self.set_active_adapters(adapter_setup)
-        warnings.warn(f'adapter_setup 3: {adapter_setup}\n')
-        
-        warnings.warn(f'frozen model 2: {self.model_frozen}\n')
 
     def has_adapters(self):
         if not getattr(self.config, "is_adaptable", None):
