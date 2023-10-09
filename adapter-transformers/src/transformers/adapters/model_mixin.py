@@ -431,6 +431,9 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
                 for param in self.base_model.shared_parameters[adapter_name].values():
                     param.requires_grad = True
 
+        if isinstance(self, InvertibleAdaptersMixin) or isinstance(self, InvertibleAdaptersWrapperMixin):
+            self.enable_invertible_adapters(adapter_setup.flatten())
+
         # use the adapters to be trained by default in every forward pass
         self.set_active_adapters(adapter_setup)
         if train_embeddings:
@@ -473,6 +476,8 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
                 The list of adapters to be activated by default. Can be a fusion or stacking configuration.
         """
         adapter_setup = parse_composition(adapter_setup, model_type=self.config.model_type)
+        # NOTE removeme
+        warnings.warn(f"parsed setup: {adapter_setup}")
         if adapter_setup:
             for adapter_name in adapter_setup.flatten():
                 if adapter_name not in self.config.adapters.adapters:
