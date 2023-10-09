@@ -552,13 +552,18 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             else:
                 raise ValueError(f"Invalid adapter setup {adapter_setup}")
             
+            # NOTE: remove me
             import warnings
-            
-            warnings.warn(f'LOCATION: {self.location_key}')
-            warnings.warn(f'ADAPTERS: {self.adapters}')
-            warnings.warn(f'SETUP: {adapter_setup}')
+            warnings.warn(f'SETUP: {adapter_setup}\n')
 
-            last_adapter = self.adapters[adapter_setup.last()]
+            # if currently an encoder adapter, use first adapter in stack
+            if self.location_key == 'monolingual_enc_adapter':
+                warnings.warn(f'enc_adapter; {adapter_setup[0]}\n')
+                warnings.warn(f'enc_adapter; {adapter_setup.first()}\n')
+                last_adapter = self.adapters[adapter_setup.first()]
+            else:
+                warnings.warn(f'dec_adapter; {adapter_setup.last()}\n')
+                last_adapter = self.adapters[adapter_setup.last()]
             hidden_states = last_adapter.post_forward(hidden_states, input_hidden_states, residual_input, layer_norm)
 
         elif layer_norm:
