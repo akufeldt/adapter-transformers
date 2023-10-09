@@ -422,6 +422,9 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
         # use the adapters to be trained by default in every forward pass
         self.set_active_adapters(adapter_setup)
+        # NOTE: remove me
+        import warnings
+        warnings.warn(f'frozen model: {getattr(self.base_model, "model_frozen", False)}\n')
 
     def has_adapters(self):
         if not getattr(self.config, "is_adaptable", None):

@@ -72,9 +72,6 @@ class Pair(AdapterCompositionBlock):
         https://aclanthology.org/2020.emnlp-main.361
         """
         super().__init__(*paired_adapters)
-        # NOTE: remove me
-        import warnings
-        warnings.warn(f'SETUP: {paired_adapters}\n')
         self.encoder_block = paired_adapters[0]
         self.decoder_block = paired_adapters[1]
 
