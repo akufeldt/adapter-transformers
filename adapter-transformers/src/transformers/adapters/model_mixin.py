@@ -418,19 +418,24 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
            determined by a list of adapter names."""
         self.train()
         self.freeze_model(True)
-        adapter_setup = parse_composition(adapter_setup)
-        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
-
-        for adapter_name in adapter_setup:
-            if adapter_name in self.base_model.shared_parameters:
-                for param in self.base_model.shared_parameters[adapter_name].values():
-                    param.requires_grad = True
-                    
-        # use the adapters to be trained by default in every forward pass
-        self.set_active_adapters(adapter_setup)
         # NOTE: remove me
         import warnings
-        warnings.warn(f'frozen model: {getattr(self.base_model, "model_frozen", False)}\n')
+        warnings.warn(f'frozen model 1: {getattr(self.base_model, "model_frozen", False)}\n')
+        adapter_setup = parse_composition(adapter_setup)
+        warnings.warn(f'adapter_setup 1: {adapter_setup}\n')
+        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
+        warnings.warn(f'adapter_setup 2: {adapter_setup}\n')
+
+        """for adapter_name in adapter_setup:
+            if adapter_name in self.base_model.shared_parameters:
+                for param in self.base_model.shared_parameters[adapter_name].values():
+                    param.requires_grad = True"""
+
+        # use the adapters to be trained by default in every forward pass
+        self.set_active_adapters(adapter_setup)
+        warnings.warn(f'adapter_setup 3: {adapter_setup}\n')
+        
+        warnings.warn(f'frozen model 2: {getattr(self.base_model, "model_frozen", False)}\n')
 
     def has_adapters(self):
         if not getattr(self.config, "is_adaptable", None):
