@@ -62,6 +62,20 @@ class Stack(AdapterCompositionBlock):
         super().__init__(*stack_layers)
 
 
+class Pair(AdapterCompositionBlock):
+    def __init__(self, *paired_adapters: List[str]):
+        """
+        Intended to pair monolingual encoder and decoder adapters; allows both adapters to be active at the same
+        time without interfering with each other's forward passes.
+
+        See 'Monolingual Adapters for Zero-Shot Neural Machine Translation' (Philip et al. 2020)
+        https://aclanthology.org/2020.emnlp-main.361
+        """
+        super().__init__(*paired_adapters)
+        self.encoder_block = paired_adapters[0]
+        self.decoder_block = paired_adapters[1]
+
+
 class Fuse(AdapterCompositionBlock):
     def __init__(self, *fuse_stacks: List[Union[AdapterCompositionBlock, str]]):
         super().__init__(*fuse_stacks)
@@ -90,6 +104,7 @@ class BatchSplit(AdapterCompositionBlock):
 # Mapping each composition block type to the allowed nested types
 ALLOWED_NESTINGS = {
     Stack: [str, Fuse, Split, Parallel, BatchSplit],
+    Pair: [str, Stack],
     Fuse: [str, Stack],
     Split: [str, Split, Stack, BatchSplit],
     Parallel: [str, Stack, BatchSplit],
@@ -114,6 +129,9 @@ SUPPORTED_MODELS = {
         "vit",
         "xlm-roberta",
         "bert-generation",
+    ],
+    Pair: [
+        "m2m100",
     ],
 }
 

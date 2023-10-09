@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from .composition import AdapterCompositionBlock, BatchSplit, Fuse, Parallel, Split, Stack, adjust_tensors_for_parallel
+from .composition import AdapterCompositionBlock, BatchSplit, Fuse, Parallel, Split, Stack, Pair, adjust_tensors_for_parallel
 from .configuration import AdapterConfig
 from .context import AdapterSetup, ForwardContext
 from .modeling import Adapter, BertFusion, ParallelAdapter
@@ -243,6 +243,37 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
         # If we got here, we either had another nested composition block
         # or no adapter was found. In both cases, we don't need to set the second return value for fusion
         return hidden_states, None, input_tensor
+    
+    # As this composition is intended for monolingual encoder + decoder adapters, it will always wrap either two single
+    # adapters or two stacks of adapters.
+    def adapter_pair(self, adapter_setup: Pair, hidden_states, input_tensor, layer_norm, lvl=0):
+        if self.location_key == 'monolingual_enc_adapter':
+            adapter_block = adapter_setup.encoder_block
+        else:
+            adapter_block = adapter_setup.decoder_block
+
+        # config of _first_ paired adapter is significant
+        first_adapter = self.adapters[adapter_setup.first()]
+        hidden_states, _, residual = first_adapter.pre_forward(hidden_states, input_tensor, layer_norm)
+
+        # Case 1: We have a nested stack -> call stack method
+        if isinstance(adapter_block, Stack):
+            hidden_states, _, _ = self.adapter_stack(
+                    adapter_block, hidden_states, input_tensor, layer_norm, lvl=lvl + 1
+                )
+        # Case 2: We have a single adapter which is part of this module -> forward pass
+        elif adapter_block in self.adapters:
+            adapter_layer = self.adapters[adapter_block]
+            context = ForwardContext.get_context()
+            layer_output = adapter_layer(
+                hidden_states,
+                residual_input=residual,
+                output_gating=context.output_adapter_gating_scores,
+            )
+            hidden_states = layer_output[0]
+            self._store_gating_score(adapter_block, layer_output[-1])
+        
+        return hidden_states
 
     def adapter_fusion(self, adapter_setup: Fuse, hidden_states, input_tensor, layer_norm, lvl=0):
         """
@@ -558,7 +589,6 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
 
             # if currently an encoder adapter, use first adapter in stack
             if self.location_key == 'monolingual_enc_adapter':
-                warnings.warn(f'enc_adapter; {adapter_setup[0]}\n')
                 warnings.warn(f'enc_adapter; {adapter_setup.first()}\n')
                 last_adapter = self.adapters[adapter_setup.first()]
             else:
