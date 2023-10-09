@@ -413,6 +413,16 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         self.set_active_adapters(adapter_setup)
         # TODO implement fusion for invertible adapters
 
+    def train_adapter_pair(self, adapter_setup: Union[list, AdapterCompositionBlock], unfreeze_adapters=False):
+        """Sets the model into mode for training of a pair of encoder and decoder ("monolingual") adapters 
+           determined by a list of adapter names."""
+        self.train()
+        self.freeze_model(True)
+        adapter_setup = parse_composition(adapter_setup)
+        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
+        # use the adapters to be trained by default in every forward pass
+        self.set_active_adapters(adapter_setup)
+
     def has_adapters(self):
         if not getattr(self.config, "is_adaptable", None):
             return False
