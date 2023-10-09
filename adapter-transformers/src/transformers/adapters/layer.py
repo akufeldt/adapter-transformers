@@ -170,6 +170,10 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             unfreeze_adapters: whether the adapter weights should be activated
             unfreeze_fusion: whether the adapter fusion layer for the given adapters should be activated
         """
+        # NOTE remove me
+        import warnings
+        warnings.warn(f"self.adapters: {self.adapters}")
+        
         if unfreeze_adapters:
             for adapter_name in adapter_setup.flatten():
                 if adapter_name in self.adapters:
