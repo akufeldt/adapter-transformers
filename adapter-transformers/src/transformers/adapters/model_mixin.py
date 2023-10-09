@@ -420,6 +420,12 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         self.freeze_model(True)
         adapter_setup = parse_composition(adapter_setup)
         self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
+
+        for adapter_name in adapter_setup:
+            if adapter_name in self.base_model.shared_parameters:
+                for param in self.base_model.shared_parameters[adapter_name].values():
+                    param.requires_grad = True
+                    
         # use the adapters to be trained by default in every forward pass
         self.set_active_adapters(adapter_setup)
         # NOTE: remove me
