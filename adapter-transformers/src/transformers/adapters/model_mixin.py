@@ -419,7 +419,7 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         self.train()
         self.freeze_model(True)
         adapter_setup = parse_composition(adapter_setup)
-        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, True))
+        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, unfreeze_adapters, False))
 
         for adapter_name in adapter_setup.flatten():
             if adapter_name in self.base_model.shared_parameters:
