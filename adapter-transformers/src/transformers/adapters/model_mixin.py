@@ -1149,6 +1149,16 @@ class ModelWithHeadsAdaptersMixin(ModelAdaptersMixin):
         else:
             self.base_model.train_adapter_fusion(adapter_setup, unfreeze_adapters=unfreeze_adapters)
 
+    def train_adapter_pair(self, adapter_setup: Union[list, AdapterCompositionBlock], train_embeddings=False):
+        """
+        Sets the model into mode for training the given adapters. If self.base_model is self, must inherit from a class
+        that implements this method, to preclude infinite recursion
+        """
+        if self.base_model is self:
+            super().train_adapter_pair(adapter_setup, train_embeddings)
+        else:
+            self.base_model.train_adapter_pair(adapter_setup, train_embeddings)
+
     def save_head(self, save_directory: str, head_name: str = None):
         loader = PredictionHeadLoader(self)
         loader.save(save_directory, name=head_name)
