@@ -172,8 +172,8 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
         """
         # NOTE remove me
         import warnings
-        warnings.warn(f"self.adapters: {self.adapters}")
-        
+        warnings.warn(f"flattened setup: {adapter_setup.flatten()}")
+
         if unfreeze_adapters:
             for adapter_name in adapter_setup.flatten():
                 if adapter_name in self.adapters:
