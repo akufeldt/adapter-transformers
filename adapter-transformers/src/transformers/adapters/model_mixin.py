@@ -414,6 +414,24 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         # TODO implement fusion for invertible adapters
 
     def train_adapter_pair(self, adapter_setup: Union[list, AdapterCompositionBlock], train_embeddings=False):
+        """Sets the model into mode for training the given adapters."""
+        self.train()
+        self.freeze_model(True)
+        adapter_setup = parse_composition(adapter_setup)
+        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, True, False))
+        for adapter_name in adapter_setup:
+            if adapter_name in self.base_model.shared_parameters:
+                for param in self.base_model.shared_parameters[adapter_name].values():
+                    param.requires_grad = True
+
+        if isinstance(self, InvertibleAdaptersMixin) or isinstance(self, InvertibleAdaptersWrapperMixin):
+            self.enable_invertible_adapters(adapter_setup.flatten())
+        # use the adapters to be trained by default in every forward pass
+        self.set_active_adapters(adapter_setup)
+        if train_embeddings:
+            self.get_input_embeddings().train()
+
+    def train_adapter_pair_deprecated(self, adapter_setup: Union[list, AdapterCompositionBlock], train_embeddings=False):
         """Sets the model into mode for training of a pair of encoder and decoder ("monolingual") adapters 
            determined by a list of adapter names."""
         self.train()
