@@ -382,7 +382,6 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         self.train()
         self.freeze_model(True)
         adapter_setup = parse_composition(adapter_setup)
-        warnings.warn(f"adapter setup: {adapter_setup}")
         self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, True, False))
         for adapter_name in adapter_setup:
             if adapter_name in self.base_model.shared_parameters:
@@ -415,51 +414,20 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         # TODO implement fusion for invertible adapters
 
     def train_adapter_pair(self, adapter_setup: Union[list, AdapterCompositionBlock], train_embeddings=False):
-        """Sets the model into mode for training the given adapters."""
+        """Sets the model into mode for training of a pair of encoder and decoder ("monolingual") adapters 
+           determined by a list of adapter names. Note: not implemented for invertible adapters."""
         self.train()
         self.freeze_model(True)
         adapter_setup = parse_composition(adapter_setup)
-        warnings.warn(f"adapter setup: {adapter_setup}")
         self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, True, False))
         for adapter_name in adapter_setup:
             if adapter_name in self.base_model.shared_parameters:
                 for param in self.base_model.shared_parameters[adapter_name].values():
                     param.requires_grad = True
-
-        if isinstance(self, InvertibleAdaptersMixin) or isinstance(self, InvertibleAdaptersWrapperMixin):
-            self.enable_invertible_adapters(adapter_setup.flatten())
         # use the adapters to be trained by default in every forward pass
         self.set_active_adapters(adapter_setup)
         if train_embeddings:
             self.get_input_embeddings().train()
-
-    def train_adapter_pair_deprecated(self, adapter_setup: Union[list, AdapterCompositionBlock], train_embeddings=False):
-        """Sets the model into mode for training of a pair of encoder and decoder ("monolingual") adapters 
-           determined by a list of adapter names."""
-        self.train()
-        self.freeze_model(True)
-
-        warnings.warn(f"frozen 1: {getattr(self.base_model, 'model_frozen', False)}")
-
-        adapter_setup = parse_composition(adapter_setup)
-        self.apply_to_adapter_layers(lambda i, layer: layer.enable_adapters(adapter_setup, True, False))
-
-        warnings.warn(f"flattened setup: {adapter_setup.flatten()}")
-
-        for adapter_name in adapter_setup.flatten():
-            if adapter_name in self.base_model.shared_parameters:
-                for param in self.base_model.shared_parameters[adapter_name].values():
-                    param.requires_grad = True
-
-        if isinstance(self, InvertibleAdaptersMixin) or isinstance(self, InvertibleAdaptersWrapperMixin):
-            self.enable_invertible_adapters(adapter_setup.flatten())
-
-        # use the adapters to be trained by default in every forward pass
-        self.set_active_adapters(adapter_setup)
-        if train_embeddings:
-            self.get_input_embeddings().train()
-
-        warnings.warn(f"frozen 2: {getattr(self.base_model, 'model_frozen', False)}")
 
     def has_adapters(self):
         if not getattr(self.config, "is_adaptable", None):
@@ -496,8 +464,7 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
                 The list of adapters to be activated by default. Can be a fusion or stacking configuration.
         """
         adapter_setup = parse_composition(adapter_setup, model_type=self.config.model_type)
-        # NOTE removeme
-        warnings.warn(f"parsed setup: {adapter_setup}")
+
         if adapter_setup:
             for adapter_name in adapter_setup.flatten():
                 if adapter_name not in self.config.adapters.adapters:
@@ -893,9 +860,6 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         for param in self.base_model.parameters():
             param.requires_grad = not freeze
         self.model_frozen = freeze
-        # NOTE removeme
-        warnings.warn(f"self: {type(self)}")
-        warnings.warn(f"frozen: {self.model_frozen}")
 
     def forward_context(self, context: ForwardContext, *args, **kwargs):
         """

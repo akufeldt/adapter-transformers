@@ -170,10 +170,6 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             unfreeze_adapters: whether the adapter weights should be activated
             unfreeze_fusion: whether the adapter fusion layer for the given adapters should be activated
         """
-        # NOTE remove me
-        import warnings
-        warnings.warn(f"flattened setup: {adapter_setup.flatten()}")
-
         if unfreeze_adapters:
             for adapter_name in adapter_setup.flatten():
                 if adapter_name in self.adapters:
@@ -586,17 +582,11 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
                 hidden_states = self.adapter_batchsplit(adapter_setup, hidden_states, residual_input, layer_norm)
             else:
                 raise ValueError(f"Invalid adapter setup {adapter_setup}")
-            
-            # NOTE: remove me
-            import warnings
-            warnings.warn(f'SETUP: {adapter_setup}\n')
 
             # if currently an encoder adapter, use first adapter in stack
             if self.location_key == 'monolingual_enc_adapter':
-                warnings.warn(f'enc_adapter; {adapter_setup.first()}\n')
                 last_adapter = self.adapters[adapter_setup.first()]
             else:
-                warnings.warn(f'dec_adapter; {adapter_setup.last()}\n')
                 last_adapter = self.adapters[adapter_setup.last()]
             hidden_states = last_adapter.post_forward(hidden_states, input_hidden_states, residual_input, layer_norm)
 
