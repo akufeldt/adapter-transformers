@@ -893,6 +893,9 @@ class ModelAdaptersMixin(PushAdapterToHubMixin, ABC):
         for param in self.base_model.parameters():
             param.requires_grad = not freeze
         self.model_frozen = freeze
+        # NOTE removeme
+        warnings.warn(f"self: {type(self)}")
+        warnings.warn(f"frozen: {self.model_frozen}")
 
     def forward_context(self, context: ForwardContext, *args, **kwargs):
         """
