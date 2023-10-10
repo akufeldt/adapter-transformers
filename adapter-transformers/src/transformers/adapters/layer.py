@@ -568,6 +568,8 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
                 hidden_states, _, residual_input = self.adapter_stack(
                     adapter_setup, hidden_states, residual_input, layer_norm
                 )
+            elif isinstance(adapter_setup, Pair):
+                hidden_states = self.adapter_pair(adapter_setup, hidden_states, residual_input, layer_norm)
             elif isinstance(adapter_setup, Fuse):
                 hidden_states = self.adapter_fusion(adapter_setup, hidden_states, residual_input, layer_norm)
             elif isinstance(adapter_setup, Split):
