@@ -171,10 +171,6 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             unfreeze_fusion: whether the adapter fusion layer for the given adapters should be activated
         """
         if unfreeze_adapters:
-            #NOTE removeme
-            import warnings
-            warnings.warn(f"adapter_setup flattened: {adapter_setup.flatten()}")
-
             for adapter_name in adapter_setup.flatten():
                 if adapter_name in self.adapters:
                     for param in self.adapters[adapter_name].parameters():
@@ -256,12 +252,12 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
         else:
             adapter_block = adapter_setup.decoder_block
 
-        # config of _first_ paired adapter is significant
+        """# config of _first_ paired adapter is significant
         if isinstance(adapter_block, Stack):
             first_adapter = self.adapters[adapter_block.first()]
         else:
             first_adapter = self.adapters[adapter_block]
-        hidden_states, _, residual = first_adapter.pre_forward(hidden_states, input_tensor, layer_norm)
+        hidden_states, _, residual = first_adapter.pre_forward(hidden_states, input_tensor, layer_norm)"""
 
         # Case 1: We have a nested stack -> call stack method
         if isinstance(adapter_block, Stack):
@@ -274,6 +270,7 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
         # Case 2: We have a single adapter which is part of this module -> forward pass
         elif adapter_block in self.adapters:
             adapter_layer = self.adapters[adapter_block]
+            hidden_states, _, residual = adapter_layer.pre_forward(hidden_states, input_tensor, layer_norm)
             context = ForwardContext.get_context()
             layer_output = adapter_layer(
                 hidden_states,
