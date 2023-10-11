@@ -171,6 +171,10 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             unfreeze_fusion: whether the adapter fusion layer for the given adapters should be activated
         """
         if unfreeze_adapters:
+            #NOTE removeme
+            import warnings
+            warnings.warn(f"adapter_setup flattened: {adapter_setup.flatten()}")
+
             for adapter_name in adapter_setup.flatten():
                 if adapter_name in self.adapters:
                     for param in self.adapters[adapter_name].parameters():
@@ -261,6 +265,9 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
 
         # Case 1: We have a nested stack -> call stack method
         if isinstance(adapter_block, Stack):
+            #NOTE removeme
+            import warnings
+            warnings.warn(f"stack adapter_block: {adapter_block}")
             hidden_states, _, _ = self.adapter_stack(
                     adapter_block, hidden_states, input_tensor, layer_norm, lvl=lvl + 1
                 )
