@@ -253,7 +253,10 @@ class AdapterLayer(AdapterLayerBase, nn.Module):
             adapter_block = adapter_setup.decoder_block
 
         # config of _first_ paired adapter is significant
-        first_adapter = self.adapters[adapter_block.first()]
+        if isinstance(adapter_block, Stack):
+            first_adapter = self.adapters[adapter_block.first()]
+        else:
+            first_adapter = self.adapters[adapter_block]
         hidden_states, _, residual = first_adapter.pre_forward(hidden_states, input_tensor, layer_norm)
 
         # Case 1: We have a nested stack -> call stack method
