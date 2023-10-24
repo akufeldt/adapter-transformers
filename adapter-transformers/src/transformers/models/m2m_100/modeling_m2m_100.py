@@ -910,7 +910,7 @@ class M2M100Encoder(InvertibleAdaptersMixin, M2M100PreTrainedModel):
         )
 
 
-class M2M100Decoder(InvertibleAdaptersMixin, M2M100PreTrainedModel):
+class M2M100Decoder(M2M100PreTrainedModel):
     """
     Transformer decoder consisting of *config.decoder_layers* layers. Each layer is a [`M2M100DecoderLayer`]
 
